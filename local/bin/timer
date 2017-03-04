@@ -67,5 +67,6 @@ yad \
 ret=$?
 
 [[ $ret -eq 5 ]] && killall mpg123 >/dev/null
+killall mpg123 >/dev/null
 
 exit
