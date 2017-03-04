@@ -1,0 +1,71 @@
+#!/bin/bash
+
+ICON="$HOME/.local/share/timer/icons/alarm_clock.png"
+SOUND="$HOME/.local/share/timer/sounds/timer.mp3"
+
+COUNT=$(\
+yad \
+--entry \
+--title="Timer" \
+--window-icon $ICON \
+--text="Use the form of 10s or 5m or 2h." \
+--width=300 \
+--height=0 \
+)
+
+	if [ $? = 1 ];
+		then
+			exit $?;
+	fi
+
+case "${COUNT: -1}" in
+    "S" | "s" ) COUNT=$(echo $COUNT | sed -s "s/[Ss]//") ;;
+    "M" | "m" ) COUNT=$(echo $COUNT | sed -s "s/[Mm]//"); ((COUNT*=60)) ;;
+    "H" | "h" ) COUNT=$(echo $COUNT | sed -s "s/[Hh]//"); ((COUNT*=3600)) ;;
+    *         ) yad --error --text "<span color=\"red\"><b>\
+    \nUse the form of 10s or 5m or 2h\nNo decimals allowed either.</b></span>"
+    sh -c "$0"
+    exit ;;
+esac
+
+START=$COUNT
+
+until [ "$COUNT" -eq "0" ]; do
+    ((COUNT-=1))
+    PERCENT=$((100-100*COUNT/START))
+    echo "#Time left:$(echo "obase=60;$COUNT" | bc)"
+    echo $PERCENT
+    sleep 1
+done \
+| yad \
+--title "Timer" \
+--progress \
+--percentage=0 \
+--text="" \
+--window-icon=$ICON \
+--width=300 \
+--height=0 \
+--auto-close
+
+	if [ $? = 1 ];
+		then
+			exit $?;
+	fi
+
+notify-send -i $ICON "The timer is over"
+mpg123 $SOUND &
+
+yad \
+--info \
+--title="Timer" \
+--text="TIME UP" \
+--window-icon=$ICON \
+--width=300 \
+--height=0 \
+--button='Stop:5'
+
+ret=$?
+
+[[ $ret -eq 5 ]] && killall mpg123 >/dev/null
+
+exit
