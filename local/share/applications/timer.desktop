@@ -1,0 +1,8 @@
+[Desktop Entry]
+Exec=HOME/.local/bin/timer
+Icon=HOME/.local/share/timer/icons/alarm_clock.png
+Name=Timer
+NoDisplay=false
+StartupNotify=true
+Type=Application
+Categories=Utility;
