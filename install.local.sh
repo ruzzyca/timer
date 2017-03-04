@@ -14,6 +14,7 @@ if [ ! -f /usr/bin/yad ];then
     echo -e "\e[32m yad ok \033[0m (Required)"
   fi
 
+# copy files
 mkdir -p ~/.local/bin
 mkdir -p ~/.local/share/timer/sounds
 mkdir -p ~/.local/share/timer/icons
@@ -22,4 +23,8 @@ cp local/share/applications/timer.desktop ~/.local/share/applications/
 sed -i "s,HOME,$HOME,g" ~/.local/share/applications/timer.desktop
 cp local/share/timer/icons/alarm_clock.png ~/.local/share/timer/icons/
 cp local/share/timer/sounds/timer.mp3 ~/.local/share/timer/sounds/
+
+# set permission
+chmod 755 ~/.local/bin/timer
+
 echo "change file timer.mp3 in $HOME/.local/share/timer/sounds/timer.mp3 for personal alarm sound"
